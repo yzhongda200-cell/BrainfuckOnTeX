@@ -105,7 +105,9 @@
 	\zybrf@c@
 }
 \expandafter\def\csname zybrf@c@.\endcsname{%
-	\char\zybrf@crr
+	\ifnum\zybrf@crr=32 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\space}
+		{\char\zybrf@crr}%
 	\zybrf@c@
 }
 \expandafter\def\csname zybrf@c@,\endcsname{%
