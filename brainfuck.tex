@@ -1,0 +1,130 @@
+\expandafter\ifx\csname makeatlletter\endcsname\relax
+	\catcode`\@=11\relax
+\else
+	\makeatletter
+\fi
+\def\brainfuck{\begingroup\futurelet\zybrf@tmp\zybrf@}
+\def\zybrf@{%
+	\ifx[\zybrf@tmp\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\zybrf@@}
+		{\zybrf@@[]}%
+}
+\def\zybrf@@[#1]#2{%
+	\edef\zybrf@tmp{#1}%
+	\zybrf@p{#2}%
+}
+\def\zybrf@p#1{%
+	\zybrf@p@\relax\zybrf@relax#1\zybrf@relax
+}
+\def\zybrf@p@#1\zybrf@relax#2{%
+	\ifx\zybrf@relax#2\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\zybrf@r{#1}}
+		{\ifx]#2\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@p@@\zybrf@relax#1\zybrf@relax}
+			{\zybrf@p@{#2}#1\zybrf@relax}}%
+}
+\def\zybrf@p@@#1\zybrf@relax#2#3\zybrf@relax{%
+	\ifx\zybrf@relax#3\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\zybrf@p\relax\zybrf@relax#1\zybrf@relax}
+		{\ifx[#2\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@p@@@\zybrf@loop{#1}\zybrf@endloop\zybrf@relax#3\zybrf@relax}
+			{\zybrf@p@@{#2}#1\zybrf@relax#3\zybrf@relax}}%
+}
+\def\zybrf@p@@@#1\zybrf@relax#2#3\zybrf@relax{%
+	\ifx\zybrf@relax#3\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\zybrf@p@\relax\zybrf@relax#1}
+		{\zybrf@p@@@{#2}#1\zybrf@relax#3\zybrf@relax}%
+}
+\def\zybrf@r#1{%
+	\zybrf@r@#1\zybrf@relax\relax\zybrf@relax
+}
+\def\zybrf@r@#1#2\zybrf@relax#3\zybrf@relax{%
+	\ifx\zybrf@relax#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\zybrf@c#3\zybrf@relax}
+		{\zybrf@r@#2\zybrf@relax{#1}#3\zybrf@relax}%
+}
+\def\zybrf@c#1\relax\zybrf@relax{%
+	\def\zybrf@cell@copy{\zybrf@current[0]}%
+	\zybrf@c@#1\zybrf@relax
+	\endgroup
+}
+\def\zybrf@c@#1{%
+	\ifx\zybrf@relax#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{}
+		{\expandafter\ifx\csname zybrf@c@\string#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@c@}
+			{\csname zybrf@c@\string#1\endcsname}}%
+}
+\def\zybrf@cell{\zybrf@current[0]}
+\def\zybrf@crr{\expandafter\zybrf@crr@\zybrf@cell@copy\zybrf@relax}
+\def\zybrf@crr@#1\zybrf@current[#2]#3\zybrf@relax{#2}
+\expandafter\def\csname zybrf@c@>\endcsname{%
+	\csname zybrf@c@>@\expandafter\endcsname\zybrf@cell@copy\zybrf@relax
+}
+\expandafter\def\csname zybrf@c@>@\endcsname#1\zybrf@current[#2]#3\zybrf@relax{%
+	\ifx\zybrf@relax#3\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\def\zybrf@cell@copy{[#2]#1\zybrf@current[0]}%
+			\zybrf@c@}
+		{\def\zybrf@cell@copy{[#2]#1\zybrf@current#3}%
+			\zybrf@c@}%
+}
+\expandafter\def\csname zybrf@c@<\endcsname{%
+	\csname zybrf@c@<@\expandafter\endcsname\zybrf@cell@copy\zybrf@relax
+}
+\expandafter\def\csname zybrf@c@<@\endcsname[#1]#2\zybrf@current#3\zybrf@relax{%
+	\def\zybrf@cell@copy{#2\zybrf@current[#1]#3}%
+	\zybrf@c@
+}
+\expandafter\def\csname zybrf@c@\string\zybrf@loop\endcsname#1{%
+	\zybrf@c@#1\zybrf@relax
+	\ifnum\zybrf@crr=0 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\zybrf@c@}
+		{\csname zybrf@c@\string\zybrf@loop\endcsname{#1}}%
+}
+\expandafter\let\csname zybrf@c@\string\zybrf@endloop\endcsname\relax
+\expandafter\def\csname zybrf@c@+\endcsname{%
+	\csname zybrf@c@+@\expandafter\endcsname\zybrf@cell@copy\zybrf@relax
+}
+\expandafter\def\csname zybrf@c@+@\endcsname#1\zybrf@current[#2]#3\zybrf@relax{%
+	\count0=#2
+	\ifnum\count0=255 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\count0=0}
+		{\advance\count0 by 1}
+	\edef\zybrf@cell@copy{#1\noexpand\zybrf@current[\the\count0]#3}%
+	\zybrf@c@
+}
+\expandafter\def\csname zybrf@c@-\endcsname{%
+	\csname zybrf@c@-@\expandafter\endcsname\zybrf@cell@copy\zybrf@relax
+}
+\expandafter\def\csname zybrf@c@-@\endcsname#1\zybrf@current[#2]#3\zybrf@relax{%
+	\count0=#2
+	\ifnum\count0=0 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\count0=255}
+		{\advance\count0 by -1}
+	\edef\zybrf@cell@copy{#1\noexpand\zybrf@current[\the\count0]#3}%
+	\zybrf@c@
+}
+\expandafter\def\csname zybrf@c@.\endcsname{%
+	\char\zybrf@crr
+	\zybrf@c@
+}
+\expandafter\def\csname zybrf@c@,\endcsname{%
+	\csname zybrf@c@,@\expandafter\endcsname\zybrf@cell@copy\zybrf@relax
+}
+\expandafter\def\csname zybrf@c@,@\endcsname#1\zybrf@current[#2]#3\zybrf@relax{%
+	\edef\zybrf@cell@copy{#1\noexpand\zybrf@current[\zybrf@input]#3}%
+	\edef\zybrf@tmp{\zybrf@input@}%
+	\zybrf@c@
+}
+\def\zybrf@input{\expandafter\zybrf@input@a\expandafter|\zybrf@tmp\zybrf@relax}
+\def\zybrf@input@{\expandafter\zybrf@input@b\expandafter|\zybrf@tmp\zybrf@relax}
+\def\zybrf@input@a|#1#2\zybrf@relax{\number`#1}
+\def\zybrf@input@b|#1#2\zybrf@relax{#2}
+\def\zybrf@relax{\zybrf@relax@}
+\long\def\@firstoftwo#1#2{#1}
+\long\def\@secondoftwo#1#2{#2}
+\expandafter\ifx\csname makeatother\endcsname\relax
+	\catcode`\@=12\relax
+\else
+	\makeatother
+\fi
