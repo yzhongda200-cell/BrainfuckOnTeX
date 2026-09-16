@@ -4,9 +4,11 @@
 
 \makeatletter
 \expandafter\def\csname zybrf@c@.\endcsname{%
-	\ifnum\zybrf@crr=32 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{\zybrf@output@n{\ }}
-		{\expandafter\zybrf@output@n\expandafter{\expandafter\char\number\zybrf@crr}}%
+	\ifzybrf@outputascii@ \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\expandafter\zybrf@output@n\expandafter{\romannumeral-`?\zybrf@crr}}
+		{\ifnum\zybrf@crr=32 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@output@n{\ }}
+			{\expandafter\zybrf@output@n\expandafter{\expandafter\char\romannumeral-`?\zybrf@crr}}}%
 	\zybrf@c@
 }
 \def\zybrf@output@n#1{%
@@ -36,17 +38,32 @@
 \newif\ifzybrf@initial@ \zybrf@initial@true
 \newif\ifzybrf@newoutput@ \zybrf@newoutput@false
 \newif\ifzybrf@addoutput@ \zybrf@addoutput@false
-\def\zybrf@s@o@memory@exists#1{\csname zybrf@memory@#1\endcsname}
-\def\zybrf@s@o@initial@exists#1{\expandafter\global\csname zybrf@initial@#1\endcsname}
+\newif\ifzybrf@outputchar@ \zybrf@outputchar@true
+\newif\ifzybrf@outputascii@ \zybrf@outputascii@false
+\def\zybrf@s@o@memory@exists#1{%
+	\expandafter\ifx\csname zybrf@memory@#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\PackageError{brainfuck}{Invalid Option Value}{Need a Boolean}}{}%
+	\def\zybrf@s@o@memory@{\zybrf@relax}%
+	\csname zybrf@memory@#1\endcsname
+}
+\def\zybrf@s@o@initial@exists#1{%
+	\expandafter\ifx\csname zybrf@initial@#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\PackageError{brainfuck}{Invalid Option Value}{Need a Boolean}}{}%
+	\def\zybrf@s@o@initial@{\zybrf@relax}%
+	\csname zybrf@initial@#1\endcsname
+}
 \def\zybrf@s@o@input@exists#1{%
+	\def\zybrf@s@o@input@{\zybrf@relax}%
 	\edef\zybrf@tmp{#1}%
 }
 \def\zybrf@s@o@output@exists#1{%
+	\zybrf@output@check{#1}%
 	\expandafter\ifx\csname \expandafter\@gobble\string#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\csname zybrf@s@o@new output@exists\endcsname{#1}}
 		{\csname zybrf@s@o@add output@exists\endcsname{#1}}%
 }
 \expandafter\def\csname zybrf@s@o@new output@exists\endcsname#1{%
+	\zybrf@output@check{#1}%
 	\def\zybrf@s@o@output@{\zybrf@relax}%
 	\expandafter\def\csname zybrf@s@o@new output@\endcsname{\zybrf@relax}%
 	\expandafter\def\csname zybrf@s@o@add output@\endcsname{\zybrf@relax}%
@@ -55,6 +72,7 @@
 	\def\zybrf@output@stack{}%
 }
 \expandafter\def\csname zybrf@s@o@add output@exists\endcsname#1{%
+	\zybrf@output@check{#1}%
 	\def\zybrf@s@o@output@{\zybrf@relax}%
 	\expandafter\def\csname zybrf@s@o@add output@\endcsname{\zybrf@relax}%
 	\expandafter\def\csname zybrf@s@o@new output@\endcsname{\zybrf@relax}%
@@ -62,15 +80,40 @@
 	\edef\zybrf@output@macro{\expandafter\@gobble\string#1}%
 	\def\zybrf@output@stack{}%
 }
+\expandafter\def\csname zybrf@s@o@output format@exists\endcsname#1{%
+	\expandafter\def\csname zybrf@s@o@output format@\endcsname{\zybrf@relax}%
+	\expandafter\ifx\csname ifzybrf@output#1@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\PackageError{brainfuck}{Invalid Option Value}{}}
+		{\csname zybrf@output#1@true\endcsname}%
+}
+\def\zybrf@output@check#1{%
+	\zybrf@output@@check#1\zybrf@relax
+}
+\def\zybrf@output@@check#1#2\zybrf@relax{%
+	\ifx\zybrf@relax#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\expandafter\expandafter\expandafter\ifx\expandafter\expandafter\expandafter\zybrf@relax\expandafter\@gobble\string#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\PackageError{brainfuck}{Invalid Option Value}{Need a Command}}{}}
+		{\PackageError{brainfuck}{Invalid Option Value}{Need a Command}}%
+}
+\def\zybrf@setting{}
+\def\brainfuckset#1{%
+	\def\zybrf@setting{#1}%
+}
 \expandafter\def\csname brainfuckcode*\endcsname{\futurelet\zybrf@tmp\zybrf@s}
 \def\zybrf@s{%
 	\def\encoded##1{\zybrf@enc{##1}|}%
 	\def\zybrf@enc{\noexpand\zybrf@enc}%
 	\ifx[\zybrf@tmp\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@s@o}
-		{\zybrf@s@p}%
+		{\expandafter\ifx\expandafter\zybrf@relax\zybrf@setting\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@s@p}
+			{\expandafter\zybrf@s@o@\zybrf@setting,\zybrf@relax}}%
 }
-\def\zybrf@s@o[#1]{\zybrf@s@o@#1,\zybrf@relax}
+\def\zybrf@s@o[#1]{%
+	\expandafter\ifx\expandafter\zybrf@relax\zybrf@setting\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\zybrf@s@o@#1,\zybrf@relax}
+		{\expandafter\zybrf@s@o@\zybrf@setting,#1,\zybrf@relax}%
+}
 \def\zybrf@s@p#1\end{%
 	\ifzybrf@initial@
 		\xdef\zybrf@cell@copy{\zybrf@cell}%
@@ -91,8 +134,7 @@
 			{\expandafter\ifx\csname zybrf@s@o@#1@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 				{\expandafter\ifx\csname zybrf@s@o@#1@exists\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 					{\PackageError{brainfuck}{Unknown Option}{}}
-					{\expandafter\def\csname zybrf@s@o@#1@\endcsname{\zybrf@relax}%
-						\csname zybrf@s@o@#1@exists\expandafter\endcsname\expandafter{\zybrf@s@o@@@|#2\zybrf@relax}}}
+					{\csname zybrf@s@o@#1@exists\expandafter\endcsname\expandafter{\zybrf@s@o@@@|#2\zybrf@relax}}}
 				{\PackageError{brainfuck}{Option Specified Twice}{}}}}%
 	\ifx\zybrf@relax#3\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@s@p}
@@ -105,7 +147,7 @@
 			\global\zybrf@initial@false}{}%
 	\expandafter\ifx\csname zybrf@output@stack\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi{}
 		{\ifzybrf@newoutput@\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\expandafter\gdef\csname\zybrf@output@macro\expandafter\endcsname\expandafter{\zybrf@output@stack\relax}}{}%
+			{\expandafter\gdef\csname\zybrf@output@macro\expandafter\endcsname\expandafter{\zybrf@output@stack}}{}%
 		\ifzybrf@addoutput@\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\expandafter\zybrf@s@addoutput\expandafter{\csname\zybrf@output@macro\endcsname}}{}}%
 }
@@ -113,7 +155,7 @@
 	\expandafter\expandafter\expandafter\zybrf@s@addoutput@\expandafter\expandafter\expandafter{\expandafter#1\zybrf@output@stack}{#1}%
 }
 \def\zybrf@s@addoutput@#1#2{%
-	\gdef#2{#1\relax}%
+	\gdef#2{#1}%
 }
 
 \endinput
