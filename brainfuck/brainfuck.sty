@@ -98,7 +98,12 @@
 }
 \def\zybrf@setting{}
 \def\brainfuckset#1{%
-	\def\zybrf@setting{#1}%
+	\ifx\zybrf@relax#1\zybrf@relax
+		\zybrf@initial@true
+		\def\zybrf@setting{}%
+	\else
+		\def\zybrf@setting{#1}%
+	\fi
 }
 \def\brainfucksetadd#1{%
 	\expandafter\ifx\expandafter\zybrf@relax\zybrf@setting\zybrf@relax
