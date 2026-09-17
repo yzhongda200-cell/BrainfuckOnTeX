@@ -1,4 +1,4 @@
-\ProvidesPackage{brainfuck}[2026/09/17]
+\ProvidesPackage{brainfuck}[2026/09/18]
 
 \input{brainfuck.tex}
 
@@ -17,6 +17,14 @@
 		{#1}
 		{\expandafter\def\csname zybrf@output@stack\expandafter\endcsname\expandafter{\zybrf@output@stack#1}}%
 }
+\expandafter\def\csname zybrf@c@,\endcsname{%
+	\expandafter\ifx\expandafter\zybrf@relax\zybrf@tmp\zybrf@relax
+		\PackageError{brainfuck}{Invalid Input}{Input Stack Is Empty.}
+	\fi
+	\catcode32=12
+	\catcode`\^^I=12
+	\csname zybrf@c@,@\expandafter\endcsname\zybrf@cell@copy\zybrf@relax
+}
 \def\zybrf@input@a|#1#2\zybrf@relax{%
 	\ifx\zybrf@enc#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@input@c{#2}}
@@ -26,16 +34,87 @@
 \def\zybrf@input@c@#1|#2\zybrf@relax{%
 	\ifnum#1<256 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{#1}
-		{}%
+		{\zybrf@input@c@@[0]\zybrf@relax#1.\zybrf@relax00000000;\zybrf@relax\zybrf@relax}%
 }
+\def\zybrf@input@c@@#1[#2]\zybrf@relax#3#4\zybrf@relax#5#6\zybrf@relax{%
+	\ifx\zybrf@relax#6\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\zybrf@input@c@add}
+		{\ifx\zybrf@relax#4\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@input@c@@[0]\zybrf@relax#1.\zybrf@relax#6\zybrf@relax#2}
+			{\expandafter\zybrf@input@c@@\number\csname zybrf@input@c@@#2#3\endcsname{#1}\zybrf@relax#4\zybrf@relax#5#6\zybrf@relax}}%
+}
+\def\zybrf@input@c@add#1{\zybrf@input@c@add@||#1\zybrf@relax}
+\def\zybrf@input@c@add@#1|#2|#3#4\zybrf@relax#5{%
+	\ifx#5\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{#3}
+			{\ifx\zybrf@relax#4\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\expandafter\zybrf@input@c@output\number\csname zybrf@input@c@add@#1@#3\endcsname{}#2\zybrf@relax}
+				{\expandafter\expandafter\expandafter\zybrf@input@c@add@\csname zybrf@input@c@add@#1@#3\endcsname{}#2|#4\zybrf@relax\zybrf@relax}}}
+		{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@input@c@add@#5||#3#4\zybrf@relax}
+			{\ifx\zybrf@relax#4\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\expandafter\zybrf@input@c@add@\expandafter|\expandafter|\romannumeral-`?\expandafter\zybrf@input@c@switch\number\csname zybrf@input@c@add@#1@#3\endcsname{#2}\zybrf@relax\zybrf@relax#5}
+				{\expandafter\expandafter\expandafter\zybrf@input@c@add@\csname zybrf@input@c@add@#1@#3\endcsname{#2}|#4\zybrf@relax#5}}}%
+}
+\def\zybrf@input@c@switch#1|#2\zybrf@relax{%
+	\ifx0#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{#2}
+		{#2#1}%
+}
+\def\zybrf@input@c@output#1|#2\zybrf@relax{%
+	\ifx0#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{#2}
+		{#1#2}%
+}
+\expandafter\def\csname zybrf@input@c@@00\endcsname#1{#10[0]}
+\expandafter\def\csname zybrf@input@c@@01\endcsname#1{#10[1]}
+\expandafter\def\csname zybrf@input@c@@02\endcsname#1{#11[0]}
+\expandafter\def\csname zybrf@input@c@@03\endcsname#1{#11[1]}
+\expandafter\def\csname zybrf@input@c@@04\endcsname#1{#12[0]}
+\expandafter\def\csname zybrf@input@c@@05\endcsname#1{#12[1]}
+\expandafter\def\csname zybrf@input@c@@06\endcsname#1{#13[0]}
+\expandafter\def\csname zybrf@input@c@@07\endcsname#1{#13[1]}
+\expandafter\def\csname zybrf@input@c@@08\endcsname#1{#14[0]}
+\expandafter\def\csname zybrf@input@c@@09\endcsname#1{#14[1]}
+\expandafter\def\csname zybrf@input@c@@10\endcsname#1{#15[0]}
+\expandafter\def\csname zybrf@input@c@@11\endcsname#1{#15[1]}
+\expandafter\def\csname zybrf@input@c@@12\endcsname#1{#16[0]}
+\expandafter\def\csname zybrf@input@c@@13\endcsname#1{#16[1]}
+\expandafter\def\csname zybrf@input@c@@14\endcsname#1{#17[0]}
+\expandafter\def\csname zybrf@input@c@@15\endcsname#1{#17[1]}
+\expandafter\def\csname zybrf@input@c@@16\endcsname#1{#18[0]}
+\expandafter\def\csname zybrf@input@c@@17\endcsname#1{#18[1]}
+\expandafter\def\csname zybrf@input@c@@18\endcsname#1{#19[0]}
+\expandafter\def\csname zybrf@input@c@@19\endcsname#1{#19[1]}
+\expandafter\def\csname zybrf@input@c@add@0@0\endcsname#1{0|#10}
+\expandafter\def\csname zybrf@input@c@add@0@1\endcsname#1{0|#12}
+\expandafter\def\csname zybrf@input@c@add@0@2\endcsname#1{0|#14}
+\expandafter\def\csname zybrf@input@c@add@0@3\endcsname#1{0|#16}
+\expandafter\def\csname zybrf@input@c@add@0@4\endcsname#1{0|#18}
+\expandafter\def\csname zybrf@input@c@add@0@5\endcsname#1{1|#10}
+\expandafter\def\csname zybrf@input@c@add@0@6\endcsname#1{1|#12}
+\expandafter\def\csname zybrf@input@c@add@0@7\endcsname#1{1|#14}
+\expandafter\def\csname zybrf@input@c@add@0@8\endcsname#1{1|#16}
+\expandafter\def\csname zybrf@input@c@add@0@9\endcsname#1{1|#18}
+\expandafter\def\csname zybrf@input@c@add@1@0\endcsname#1{0|#11}
+\expandafter\def\csname zybrf@input@c@add@1@1\endcsname#1{0|#13}
+\expandafter\def\csname zybrf@input@c@add@1@2\endcsname#1{0|#15}
+\expandafter\def\csname zybrf@input@c@add@1@3\endcsname#1{0|#17}
+\expandafter\def\csname zybrf@input@c@add@1@4\endcsname#1{0|#19}
+\expandafter\def\csname zybrf@input@c@add@1@5\endcsname#1{1|#11}
+\expandafter\def\csname zybrf@input@c@add@1@6\endcsname#1{1|#13}
+\expandafter\def\csname zybrf@input@c@add@1@7\endcsname#1{1|#15}
+\expandafter\def\csname zybrf@input@c@add@1@8\endcsname#1{1|#17}
+\expandafter\def\csname zybrf@input@c@add@1@9\endcsname#1{1|#19}
 \def\zybrf@input@check#1{%
 	\zybrf@input@check@#1\zybrf@relax
 }
 \def\zybrf@input@check@#1{%
 	\ifx#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{}
-		{\expandafter\ifx\csname zybrf@input@check@#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\noexpand\PackageError{brainfuck}{Invalid Input}{Need a ASCII code}}
+		{\expandafter\ifx\csname zybrf@input@check@\string#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\noexpand\PackageError{brainfuck}{Invalid Input}{Need a ASCII Code.}}
 			{\zybrf@input@check@}}%
 }
 \expandafter\def\csname zybrf@input@check@0\endcsname{0}
@@ -63,13 +142,13 @@
 \newif\ifzybrf@outputascii@ \zybrf@outputascii@false
 \def\zybrf@s@o@memory@exists#1{%
 	\expandafter\ifx\csname zybrf@memory@#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{\PackageError{brainfuck}{Invalid Option Value}{Need a Boolean}}{}%
+		{\PackageError{brainfuck}{Invalid Option Value}{Need a Boolean.}}{}%
 	\def\zybrf@s@o@memory@{\zybrf@relax}%
 	\csname zybrf@memory@#1\endcsname
 }
 \def\zybrf@s@o@initial@exists#1{%
 	\expandafter\ifx\csname zybrf@initial@#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{\PackageError{brainfuck}{Invalid Option Value}{Need a Boolean}}{}%
+		{\PackageError{brainfuck}{Invalid Option Value}{Need a Boolean.}}{}%
 	\def\zybrf@s@o@initial@{\zybrf@relax}%
 	\csname zybrf@initial@#1\endcsname
 }
@@ -115,8 +194,8 @@
 \def\zybrf@output@@check#1#2\zybrf@relax{%
 	\ifx\zybrf@relax#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\expandafter\expandafter\expandafter\ifx\expandafter\expandafter\expandafter\zybrf@relax\expandafter\@gobble\string#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\PackageError{brainfuck}{Invalid Option Value}{Need a Command}}{}}
-		{\PackageError{brainfuck}{Invalid Option Value}{Need a Command}}%
+			{\PackageError{brainfuck}{Invalid Option Value}{Need a Command.}}{}}
+		{\PackageError{brainfuck}{Invalid Option Value}{Need a Command.}}%
 }
 \def\zybrf@setting{}
 \def\brainfuckset#1{%
@@ -136,7 +215,12 @@
 }
 \expandafter\def\csname brainfuckcode*\endcsname{\futurelet\zybrf@tmp\zybrf@s}
 \def\zybrf@s{%
-	\def\encoded##1{\zybrf@enc{##1}|}%
+	\def\encoded##1{\zybrf@@enc##1 \relax}%
+	\def\zybrf@@enc##1 ##2{%
+		\ifx##2\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@enc{##1}|}
+			{\zybrf@enc{##1}|\zybrf@@enc##2}%
+	}%
 	\def\zybrf@enc{\noexpand\zybrf@enc}%
 	\ifx[\zybrf@tmp\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@s@o}
@@ -169,16 +253,16 @@
 }
 \def\zybrf@s@o@@#1=#2\zybrf@relax#3{%
 	\expandafter\ifx\expandafter\zybrf@relax\zybrf@s@@o#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{\PackageError{brainfuck}{Invalid Option}{Complete Option Value}}
+		{\PackageError{brainfuck}{Invalid Option}{Complete Option Value.}}
 		{\expandafter\ifx\expandafter\zybrf@relax\romannumeral-`?\zybrf@s@o@@@#2\zybrf@relax\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\PackageError{brainfuck}{Invalid Option Value}{Need a Option Value}}
+			{\PackageError{brainfuck}{Invalid Option Value}{Need a Option Value.}}
 			{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-				{\PackageError{brainfuck}{Invalid Option}{Complete Option Name}}
+				{\PackageError{brainfuck}{Invalid Option}{Complete Option Name.}}
 				{\expandafter\ifx\csname zybrf@s@o@#1@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 					{\expandafter\ifx\csname zybrf@s@o@#1@exists\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-						{\PackageError{brainfuck}{Unknown Option}{`#1'}}
+						{\PackageError{brainfuck}{Unknown Option}{`#1'?}}
 						{\csname zybrf@s@o@#1@exists\expandafter\endcsname\expandafter{\romannumeral-`?\zybrf@s@o@@@#2\zybrf@relax}}}
-					{\PackageError{brainfuck}{Option Specified Twice}{`#1'}}}}}%
+					{\PackageError{brainfuck}{Option Specified Twice}{Option `#1'.}}}}}%
 	\ifx\zybrf@relax#3\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@s@p}
 		{\zybrf@s@o@#3}%
