@@ -80,10 +80,9 @@
 	\zybrf@c@
 }
 \expandafter\def\csname zybrf@c@\string\zybrf@loop\endcsname#1{%
-	\zybrf@c@#1\zybrf@relax
 	\ifnum\zybrf@crr=0 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@c@}
-		{\csname zybrf@c@\string\zybrf@loop\endcsname{#1}}%
+		{\zybrf@c@#1\zybrf@relax\csname zybrf@c@\string\zybrf@loop\endcsname{#1}}%
 }
 \expandafter\let\csname zybrf@c@\string\zybrf@endloop\endcsname\relax
 \expandafter\def\csname zybrf@c@+\endcsname{%
