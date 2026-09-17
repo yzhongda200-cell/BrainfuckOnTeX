@@ -28,14 +28,19 @@
 \def\zybrf@input@a|#1#2\zybrf@relax{%
 	\ifx\zybrf@enc#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@input@c{#2}}
-		{\number`#1}%
+		{\ifx\zybrf@enc@fix#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@input@ef#2\zybrf@relax}
+			{\ifx\zybrf@fix#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\zybrf@input@f#2\zybrf@relax}
+				{\expandafter\zybrf@input@@c\expandafter{\number`#1}}}}%
 }
+\def\zybrf@input@ef#1|#2\zybrf@relax{\zybrf@input@@c{#1}}
+\def\zybrf@input@f#1|#2\zybrf@relax{\expandafter\zybrf@input@@c\expandafter{\number`#1}}
 \def\zybrf@input@c#1{\zybrf@input@c@#1\zybrf@relax}
 \def\zybrf@input@c@#1|#2\zybrf@relax{%
-	\ifnum#1<256 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{#1}
-		{\zybrf@input@c@@[0]\zybrf@relax#1.\zybrf@relax00000000;\zybrf@relax\zybrf@relax}%
+	\zybrf@input@@c{#1}%
 }
+\def\zybrf@input@@c#1{\zybrf@input@c@@[0]\zybrf@relax#1.\zybrf@relax00000000;\zybrf@relax\zybrf@relax}
 \def\zybrf@input@c@@#1[#2]\zybrf@relax#3#4\zybrf@relax#5#6\zybrf@relax{%
 	\ifx\zybrf@relax#6\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@input@c@add}
@@ -115,22 +120,28 @@
 		{}
 		{\expandafter\ifx\csname zybrf@input@check@\string#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\noexpand\PackageError{brainfuck}{Invalid Input}{Need a ASCII Code.}}
-			{\zybrf@input@check@}}%
+			{\csname zybrf@input@check@\string#1\endcsname}}%
 }
-\expandafter\def\csname zybrf@input@check@0\endcsname{0}
-\expandafter\def\csname zybrf@input@check@1\endcsname{1}
-\expandafter\def\csname zybrf@input@check@2\endcsname{2}
-\expandafter\def\csname zybrf@input@check@3\endcsname{3}
-\expandafter\def\csname zybrf@input@check@4\endcsname{4}
-\expandafter\def\csname zybrf@input@check@5\endcsname{5}
-\expandafter\def\csname zybrf@input@check@6\endcsname{6}
-\expandafter\def\csname zybrf@input@check@7\endcsname{7}
-\expandafter\def\csname zybrf@input@check@8\endcsname{8}
-\expandafter\def\csname zybrf@input@check@9\endcsname{9}
+\expandafter\def\csname zybrf@input@check@0\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@1\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@2\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@3\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@4\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@5\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@6\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@7\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@8\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@9\endcsname{\zybrf@input@check@}
+\expandafter\def\csname zybrf@input@check@\string\fix\endcsname{\zybrf@input@check@fix}
+\def\zybrf@input@check@fix#1{\zybrf@input@check@#1}
 \def\zybrf@input@b|#1#2\zybrf@relax{%
 	\ifx\zybrf@enc#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@input@d{#2}}
-		{#2}%
+		{\ifx\zybrf@enc@fix#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\noexpand\zybrf@enc@fix#2}
+			{\ifx\zybrf@fix#1\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\noexpand\zybrf@fix#2}
+				{#2}}}%
 }
 \def\zybrf@input@d#1{\zybrf@input@d@#1\zybrf@relax}
 \def\zybrf@input@d@#1|#2\zybrf@relax{#2}
@@ -218,9 +229,28 @@
 	\def\encoded##1{\zybrf@@enc##1 \relax}%
 	\def\zybrf@@enc##1 ##2{%
 		\ifx##2\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\zybrf@enc{##1}|}
-			{\zybrf@enc{##1}|\zybrf@@enc##2}%
+			{\zybrf@@@enc{##1}}
+			{\ifx##2\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\zybrf@@@enc{##1}\zybrf@@enc@fix}
+				{\zybrf@@@enc{##1}\zybrf@@enc##2}}%
 	}%
+	\def\zybrf@@@enc##1{\zybrf@@@enc@##1\zybrf@relax}%
+	\def\zybrf@@@enc@##1##2\zybrf@relax{%
+		\ifx##1\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@enc@fix{##2}|}
+			{\ifx##1\encoded\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\zybrf@@enc##2 \relax}
+				{\zybrf@enc{##1##2}|}}%
+	}%
+	\def\fix##1{%
+		\ifx##1\encoded\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\expandafter\zybrf@@fix\romannumeral-`?\encoded}
+			{\zybrf@fix{##1}|}%
+	}%
+	\def\zybrf@@fix##1{\zybrf@enc@fix}%
+	\def\zybrf@@enc@fix##1{\zybrf@enc@fix{##1}|}%
+	\def\zybrf@enc@fix{\noexpand\zybrf@enc@fix}%
+	\def\zybrf@fix{\noexpand\zybrf@fix}%
 	\def\zybrf@enc{\noexpand\zybrf@enc}%
 	\ifx[\zybrf@tmp\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@s@o}
@@ -273,9 +303,12 @@
 		{\noexpand#1}
 		{\ifx#2\encoded\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\zybrf@s@o@@@@@#1#2\zybrf@relax}
-			{\zybrf@s@o@@@@#1#2\zybrf@relax}}%
+			{\ifx#2\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\zybrf@s@o@@@@@@#1#2\zybrf@relax}
+				{\zybrf@s@o@@@@#1#2\zybrf@relax}}}%
 }
 \def\zybrf@s@o@@@@@#1\zybrf@relax#2{\zybrf@input@check{#2}\zybrf@s@o@@@@#1{#2}\zybrf@relax}
+\def\zybrf@s@o@@@@@@#1\zybrf@relax#2{\zybrf@s@o@@@@#1\zybrf@relax#2}
 \def\zybrf@s@@o#1{#1}
 \expandafter\def\csname endbrainfuckcode*\endcsname{%
 	\ifzybrf@memory@\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
