@@ -1,4 +1,4 @@
-\ProvidesPackage{brainfuck}[2026/09/18]
+\ProvidesPackage{brainfuck}[2026/09/19]
 
 \input{brainfuck.tex}
 
@@ -7,9 +7,11 @@
 \expandafter\def\csname zybrf@c@.\endcsname{%
 	\ifzybrf@outputascii@ \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\expandafter\zybrf@output@n\expandafter{\romannumeral-`?\zybrf@crr}}
-		{\ifnum\zybrf@crr=32 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\zybrf@output@n{\ }}
-			{\expandafter\zybrf@output@n\expandafter{\expandafter\char\romannumeral-`?\zybrf@crr}}}%
+		{\ifzybrf@outputunicode@ \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\expandafter\zybrf@output@n\expandafter{\romannumeral-`?\expandafter\zybrf@output@uni\expandafter{\number\zybrf@crr} }}
+			{\ifnum\zybrf@crr=32 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\zybrf@output@n{\ }}
+				{\expandafter\zybrf@output@n\expandafter{\expandafter\char\romannumeral-`?\zybrf@crr}}}}%
 	\zybrf@c@
 }
 \def\zybrf@output@n#1{%
@@ -17,6 +19,177 @@
 		{#1}
 		{\expandafter\def\csname zybrf@output@stack\expandafter\endcsname\expandafter{\zybrf@output@stack#1}}%
 }
+\def\zybrf@output@uni#1{%
+	\zybrf@output@uni@[0]\zybrf@relax#1.\zybrf@relax
+}
+\def\zybrf@output@uni@#1[#2]\zybrf@relax#3#4\zybrf@relax{%
+\message{^^J[#1][#2][#3][#4]}%
+	\ifx\zybrf@relax#4\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\ifnum#1=0 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{#2}
+			{\zybrf@output@uni@[0]\zybrf@relax#1.\zybrf@relax#2}}
+		{\expandafter\zybrf@output@uni@\number\csname zybrf@output@uni@#2#3\endcsname{#1}\zybrf@relax#4\zybrf@relax}%
+}
+\expandafter\def\csname zybrf@output@uni@00\endcsname#1{#10[0]}
+\expandafter\def\csname zybrf@output@uni@01\endcsname#1{#10[1]}
+\expandafter\def\csname zybrf@output@uni@02\endcsname#1{#10[2]}
+\expandafter\def\csname zybrf@output@uni@03\endcsname#1{#10[3]}
+\expandafter\def\csname zybrf@output@uni@04\endcsname#1{#10[4]}
+\expandafter\def\csname zybrf@output@uni@05\endcsname#1{#10[5]}
+\expandafter\def\csname zybrf@output@uni@06\endcsname#1{#10[6]}
+\expandafter\def\csname zybrf@output@uni@07\endcsname#1{#10[7]}
+\expandafter\def\csname zybrf@output@uni@08\endcsname#1{#10[8]}
+\expandafter\def\csname zybrf@output@uni@09\endcsname#1{#10[9]}
+\expandafter\def\csname zybrf@output@uni@10\endcsname#1{#10[A]}
+\expandafter\def\csname zybrf@output@uni@11\endcsname#1{#10[B]}
+\expandafter\def\csname zybrf@output@uni@12\endcsname#1{#10[C]}
+\expandafter\def\csname zybrf@output@uni@13\endcsname#1{#10[D]}
+\expandafter\def\csname zybrf@output@uni@14\endcsname#1{#10[E]}
+\expandafter\def\csname zybrf@output@uni@15\endcsname#1{#10[F]}
+\expandafter\def\csname zybrf@output@uni@16\endcsname#1{#11[0]}
+\expandafter\def\csname zybrf@output@uni@17\endcsname#1{#11[1]}
+\expandafter\def\csname zybrf@output@uni@18\endcsname#1{#11[2]}
+\expandafter\def\csname zybrf@output@uni@19\endcsname#1{#11[3]}
+\expandafter\def\csname zybrf@output@uni@20\endcsname#1{#11[4]}
+\expandafter\def\csname zybrf@output@uni@21\endcsname#1{#11[5]}
+\expandafter\def\csname zybrf@output@uni@22\endcsname#1{#11[6]}
+\expandafter\def\csname zybrf@output@uni@23\endcsname#1{#11[7]}
+\expandafter\def\csname zybrf@output@uni@24\endcsname#1{#11[8]}
+\expandafter\def\csname zybrf@output@uni@25\endcsname#1{#11[9]}
+\expandafter\def\csname zybrf@output@uni@26\endcsname#1{#11[A]}
+\expandafter\def\csname zybrf@output@uni@27\endcsname#1{#11[B]}
+\expandafter\def\csname zybrf@output@uni@28\endcsname#1{#11[C]}
+\expandafter\def\csname zybrf@output@uni@29\endcsname#1{#11[D]}
+\expandafter\def\csname zybrf@output@uni@30\endcsname#1{#11[E]}
+\expandafter\def\csname zybrf@output@uni@31\endcsname#1{#11[F]}
+\expandafter\def\csname zybrf@output@uni@32\endcsname#1{#12[0]}
+\expandafter\def\csname zybrf@output@uni@33\endcsname#1{#12[1]}
+\expandafter\def\csname zybrf@output@uni@34\endcsname#1{#12[2]}
+\expandafter\def\csname zybrf@output@uni@35\endcsname#1{#12[3]}
+\expandafter\def\csname zybrf@output@uni@36\endcsname#1{#12[4]}
+\expandafter\def\csname zybrf@output@uni@37\endcsname#1{#12[5]}
+\expandafter\def\csname zybrf@output@uni@38\endcsname#1{#12[6]}
+\expandafter\def\csname zybrf@output@uni@39\endcsname#1{#12[7]}
+\expandafter\def\csname zybrf@output@uni@40\endcsname#1{#12[8]}
+\expandafter\def\csname zybrf@output@uni@41\endcsname#1{#12[9]}
+\expandafter\def\csname zybrf@output@uni@42\endcsname#1{#12[A]}
+\expandafter\def\csname zybrf@output@uni@43\endcsname#1{#12[B]}
+\expandafter\def\csname zybrf@output@uni@44\endcsname#1{#12[C]}
+\expandafter\def\csname zybrf@output@uni@45\endcsname#1{#12[D]}
+\expandafter\def\csname zybrf@output@uni@46\endcsname#1{#12[E]}
+\expandafter\def\csname zybrf@output@uni@47\endcsname#1{#12[F]}
+\expandafter\def\csname zybrf@output@uni@48\endcsname#1{#13[0]}
+\expandafter\def\csname zybrf@output@uni@49\endcsname#1{#13[1]}
+\expandafter\def\csname zybrf@output@uni@50\endcsname#1{#13[2]}
+\expandafter\def\csname zybrf@output@uni@51\endcsname#1{#13[3]}
+\expandafter\def\csname zybrf@output@uni@52\endcsname#1{#13[4]}
+\expandafter\def\csname zybrf@output@uni@53\endcsname#1{#13[5]}
+\expandafter\def\csname zybrf@output@uni@54\endcsname#1{#13[6]}
+\expandafter\def\csname zybrf@output@uni@55\endcsname#1{#13[7]}
+\expandafter\def\csname zybrf@output@uni@56\endcsname#1{#13[8]}
+\expandafter\def\csname zybrf@output@uni@57\endcsname#1{#13[9]}
+\expandafter\def\csname zybrf@output@uni@58\endcsname#1{#13[A]}
+\expandafter\def\csname zybrf@output@uni@59\endcsname#1{#13[B]}
+\expandafter\def\csname zybrf@output@uni@60\endcsname#1{#13[C]}
+\expandafter\def\csname zybrf@output@uni@61\endcsname#1{#13[D]}
+\expandafter\def\csname zybrf@output@uni@62\endcsname#1{#13[E]}
+\expandafter\def\csname zybrf@output@uni@63\endcsname#1{#13[F]}
+\expandafter\def\csname zybrf@output@uni@64\endcsname#1{#14[0]}
+\expandafter\def\csname zybrf@output@uni@65\endcsname#1{#14[1]}
+\expandafter\def\csname zybrf@output@uni@66\endcsname#1{#14[2]}
+\expandafter\def\csname zybrf@output@uni@67\endcsname#1{#14[3]}
+\expandafter\def\csname zybrf@output@uni@68\endcsname#1{#14[4]}
+\expandafter\def\csname zybrf@output@uni@69\endcsname#1{#14[5]}
+\expandafter\def\csname zybrf@output@uni@70\endcsname#1{#14[6]}
+\expandafter\def\csname zybrf@output@uni@71\endcsname#1{#14[7]}
+\expandafter\def\csname zybrf@output@uni@72\endcsname#1{#14[8]}
+\expandafter\def\csname zybrf@output@uni@73\endcsname#1{#14[9]}
+\expandafter\def\csname zybrf@output@uni@74\endcsname#1{#14[A]}
+\expandafter\def\csname zybrf@output@uni@75\endcsname#1{#14[B]}
+\expandafter\def\csname zybrf@output@uni@76\endcsname#1{#14[C]}
+\expandafter\def\csname zybrf@output@uni@77\endcsname#1{#14[D]}
+\expandafter\def\csname zybrf@output@uni@78\endcsname#1{#14[E]}
+\expandafter\def\csname zybrf@output@uni@79\endcsname#1{#14[F]}
+\expandafter\def\csname zybrf@output@uni@80\endcsname#1{#15[0]}
+\expandafter\def\csname zybrf@output@uni@81\endcsname#1{#15[1]}
+\expandafter\def\csname zybrf@output@uni@82\endcsname#1{#15[2]}
+\expandafter\def\csname zybrf@output@uni@83\endcsname#1{#15[3]}
+\expandafter\def\csname zybrf@output@uni@84\endcsname#1{#15[4]}
+\expandafter\def\csname zybrf@output@uni@85\endcsname#1{#15[5]}
+\expandafter\def\csname zybrf@output@uni@86\endcsname#1{#15[6]}
+\expandafter\def\csname zybrf@output@uni@87\endcsname#1{#15[7]}
+\expandafter\def\csname zybrf@output@uni@88\endcsname#1{#15[8]}
+\expandafter\def\csname zybrf@output@uni@89\endcsname#1{#15[9]}
+\expandafter\def\csname zybrf@output@uni@90\endcsname#1{#15[A]}
+\expandafter\def\csname zybrf@output@uni@91\endcsname#1{#15[B]}
+\expandafter\def\csname zybrf@output@uni@92\endcsname#1{#15[C]}
+\expandafter\def\csname zybrf@output@uni@93\endcsname#1{#15[D]}
+\expandafter\def\csname zybrf@output@uni@94\endcsname#1{#15[E]}
+\expandafter\def\csname zybrf@output@uni@95\endcsname#1{#15[F]}
+\expandafter\def\csname zybrf@output@uni@96\endcsname#1{#16[0]}
+\expandafter\def\csname zybrf@output@uni@97\endcsname#1{#16[1]}
+\expandafter\def\csname zybrf@output@uni@98\endcsname#1{#16[2]}
+\expandafter\def\csname zybrf@output@uni@99\endcsname#1{#16[3]}
+\expandafter\def\csname zybrf@output@uni@A0\endcsname#1{#16[4]}
+\expandafter\def\csname zybrf@output@uni@A1\endcsname#1{#16[5]}
+\expandafter\def\csname zybrf@output@uni@A2\endcsname#1{#16[6]}
+\expandafter\def\csname zybrf@output@uni@A3\endcsname#1{#16[7]}
+\expandafter\def\csname zybrf@output@uni@A4\endcsname#1{#16[8]}
+\expandafter\def\csname zybrf@output@uni@A5\endcsname#1{#16[9]}
+\expandafter\def\csname zybrf@output@uni@A6\endcsname#1{#16[A]}
+\expandafter\def\csname zybrf@output@uni@A7\endcsname#1{#16[B]}
+\expandafter\def\csname zybrf@output@uni@A8\endcsname#1{#16[C]}
+\expandafter\def\csname zybrf@output@uni@A9\endcsname#1{#16[D]}
+\expandafter\def\csname zybrf@output@uni@B0\endcsname#1{#16[E]}
+\expandafter\def\csname zybrf@output@uni@B1\endcsname#1{#16[F]}
+\expandafter\def\csname zybrf@output@uni@B2\endcsname#1{#17[0]}
+\expandafter\def\csname zybrf@output@uni@B3\endcsname#1{#17[1]}
+\expandafter\def\csname zybrf@output@uni@B4\endcsname#1{#17[2]}
+\expandafter\def\csname zybrf@output@uni@B5\endcsname#1{#17[3]}
+\expandafter\def\csname zybrf@output@uni@B6\endcsname#1{#17[4]}
+\expandafter\def\csname zybrf@output@uni@B7\endcsname#1{#17[5]}
+\expandafter\def\csname zybrf@output@uni@B8\endcsname#1{#17[6]}
+\expandafter\def\csname zybrf@output@uni@B9\endcsname#1{#17[7]}
+\expandafter\def\csname zybrf@output@uni@C0\endcsname#1{#17[8]}
+\expandafter\def\csname zybrf@output@uni@C1\endcsname#1{#17[9]}
+\expandafter\def\csname zybrf@output@uni@C2\endcsname#1{#17[A]}
+\expandafter\def\csname zybrf@output@uni@C3\endcsname#1{#17[B]}
+\expandafter\def\csname zybrf@output@uni@C4\endcsname#1{#17[C]}
+\expandafter\def\csname zybrf@output@uni@C5\endcsname#1{#17[D]}
+\expandafter\def\csname zybrf@output@uni@C6\endcsname#1{#17[E]}
+\expandafter\def\csname zybrf@output@uni@C7\endcsname#1{#17[F]}
+\expandafter\def\csname zybrf@output@uni@C8\endcsname#1{#18[0]}
+\expandafter\def\csname zybrf@output@uni@C9\endcsname#1{#18[1]}
+\expandafter\def\csname zybrf@output@uni@D0\endcsname#1{#18[2]}
+\expandafter\def\csname zybrf@output@uni@D1\endcsname#1{#18[3]}
+\expandafter\def\csname zybrf@output@uni@D2\endcsname#1{#18[4]}
+\expandafter\def\csname zybrf@output@uni@D3\endcsname#1{#18[5]}
+\expandafter\def\csname zybrf@output@uni@D4\endcsname#1{#18[6]}
+\expandafter\def\csname zybrf@output@uni@D5\endcsname#1{#18[7]}
+\expandafter\def\csname zybrf@output@uni@D6\endcsname#1{#18[8]}
+\expandafter\def\csname zybrf@output@uni@D7\endcsname#1{#18[9]}
+\expandafter\def\csname zybrf@output@uni@D8\endcsname#1{#18[A]}
+\expandafter\def\csname zybrf@output@uni@D9\endcsname#1{#18[B]}
+\expandafter\def\csname zybrf@output@uni@E0\endcsname#1{#18[C]}
+\expandafter\def\csname zybrf@output@uni@E1\endcsname#1{#18[D]}
+\expandafter\def\csname zybrf@output@uni@E2\endcsname#1{#18[E]}
+\expandafter\def\csname zybrf@output@uni@E3\endcsname#1{#18[F]}
+\expandafter\def\csname zybrf@output@uni@E4\endcsname#1{#19[0]}
+\expandafter\def\csname zybrf@output@uni@E5\endcsname#1{#19[1]}
+\expandafter\def\csname zybrf@output@uni@E6\endcsname#1{#19[2]}
+\expandafter\def\csname zybrf@output@uni@E7\endcsname#1{#19[3]}
+\expandafter\def\csname zybrf@output@uni@E8\endcsname#1{#19[4]}
+\expandafter\def\csname zybrf@output@uni@E9\endcsname#1{#19[5]}
+\expandafter\def\csname zybrf@output@uni@F0\endcsname#1{#19[6]}
+\expandafter\def\csname zybrf@output@uni@F1\endcsname#1{#19[7]}
+\expandafter\def\csname zybrf@output@uni@F2\endcsname#1{#19[8]}
+\expandafter\def\csname zybrf@output@uni@F3\endcsname#1{#19[9]}
+\expandafter\def\csname zybrf@output@uni@F4\endcsname#1{#19[A]}
+\expandafter\def\csname zybrf@output@uni@F5\endcsname#1{#19[B]}
+\expandafter\def\csname zybrf@output@uni@F6\endcsname#1{#19[C]}
+\expandafter\def\csname zybrf@output@uni@F7\endcsname#1{#19[D]}
+\expandafter\def\csname zybrf@output@uni@F8\endcsname#1{#19[E]}
+\expandafter\def\csname zybrf@output@uni@F9\endcsname#1{#19[F]}
 \expandafter\def\csname zybrf@c@,\endcsname{%
 	\expandafter\ifx\expandafter\zybrf@relax\zybrf@tmp\zybrf@relax
 		\PackageError{brainfuck}{Invalid Input}{Input Stack Is Empty.}
@@ -40,22 +213,22 @@
 \def\zybrf@input@c@#1|#2\zybrf@relax{%
 	\zybrf@input@@c{#1}%
 }
-\def\zybrf@input@@c#1{\zybrf@input@c@@[0]\zybrf@relax#1.\zybrf@relax00000000;\zybrf@relax\zybrf@relax}
+\def\zybrf@input@@c#1{\zybrf@input@c@@[0]\zybrf@relax#1.\zybrf@relax00000000;\zybrf@relax;}
 \def\zybrf@input@c@@#1[#2]\zybrf@relax#3#4\zybrf@relax#5#6\zybrf@relax{%
 	\ifx\zybrf@relax#6\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{\zybrf@input@c@add}
+		{\expandafter\zybrf@input@c@add\number}
 		{\ifx\zybrf@relax#4\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\zybrf@input@c@@[0]\zybrf@relax#1.\zybrf@relax#6\zybrf@relax#2}
 			{\expandafter\zybrf@input@c@@\number\csname zybrf@input@c@@#2#3\endcsname{#1}\zybrf@relax#4\zybrf@relax#5#6\zybrf@relax}}%
 }
 \def\zybrf@input@c@add#1{\zybrf@input@c@add@||#1\zybrf@relax}
 \def\zybrf@input@c@add@#1|#2|#3#4\zybrf@relax#5{%
-	\ifx#5\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+	\ifx#5;\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{#3}
 			{\ifx\zybrf@relax#4\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 				{\expandafter\zybrf@input@c@output\number\csname zybrf@input@c@add@#1@#3\endcsname{}#2\zybrf@relax}
-				{\expandafter\expandafter\expandafter\zybrf@input@c@add@\csname zybrf@input@c@add@#1@#3\endcsname{}#2|#4\zybrf@relax\zybrf@relax}}}
+				{\expandafter\expandafter\expandafter\zybrf@input@c@add@\csname zybrf@input@c@add@#1@#3\endcsname{}#2|#4\zybrf@relax;}}}
 		{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\zybrf@input@c@add@#5||#3#4\zybrf@relax}
 			{\ifx\zybrf@relax#4\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
@@ -145,23 +318,74 @@
 }
 \def\zybrf@input@d#1{\zybrf@input@d@#1\zybrf@relax}
 \def\zybrf@input@d@#1|#2\zybrf@relax{#2}
+\def\zybrf@lowercase#1{%
+	\zybrf@lowercase@#1 \zybrf@relax
+}
+\def\zybrf@lowercase@#1 #2\zybrf@relax{%
+	\ifx\zybrf@relax#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{}
+			{\zybrf@lowercase@@#1\zybrf@relax}}
+		{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{}
+			{\zybrf@lowercase@@#1\zybrf@relax\space}\zybrf@lowercase@#2\zybrf@relax}%
+}
+\def\zybrf@lowercase@@#1#2\zybrf@relax{%
+	\ifx\zybrf@relax#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\expandafter\ifx\csname zybrf@lowercase@\string#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\string#1}
+			{\csname zybrf@lowercase@\string#1\endcsname}}
+		{\expandafter\ifx\csname zybrf@lowercase@\string#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\string#1}
+			{\csname zybrf@lowercase@\string#1\endcsname}%
+			\zybrf@lowercase@@#2\zybrf@relax}%
+}
+\expandafter\def\csname zybrf@lowercase@A\endcsname{a}
+\expandafter\def\csname zybrf@lowercase@B\endcsname{b}
+\expandafter\def\csname zybrf@lowercase@C\endcsname{c}
+\expandafter\def\csname zybrf@lowercase@D\endcsname{d}
+\expandafter\def\csname zybrf@lowercase@E\endcsname{e}
+\expandafter\def\csname zybrf@lowercase@F\endcsname{f}
+\expandafter\def\csname zybrf@lowercase@G\endcsname{g}
+\expandafter\def\csname zybrf@lowercase@H\endcsname{h}
+\expandafter\def\csname zybrf@lowercase@I\endcsname{i}
+\expandafter\def\csname zybrf@lowercase@J\endcsname{j}
+\expandafter\def\csname zybrf@lowercase@K\endcsname{k}
+\expandafter\def\csname zybrf@lowercase@L\endcsname{l}
+\expandafter\def\csname zybrf@lowercase@M\endcsname{m}
+\expandafter\def\csname zybrf@lowercase@N\endcsname{n}
+\expandafter\def\csname zybrf@lowercase@O\endcsname{o}
+\expandafter\def\csname zybrf@lowercase@P\endcsname{p}
+\expandafter\def\csname zybrf@lowercase@Q\endcsname{q}
+\expandafter\def\csname zybrf@lowercase@R\endcsname{r}
+\expandafter\def\csname zybrf@lowercase@S\endcsname{s}
+\expandafter\def\csname zybrf@lowercase@T\endcsname{t}
+\expandafter\def\csname zybrf@lowercase@U\endcsname{u}
+\expandafter\def\csname zybrf@lowercase@V\endcsname{v}
+\expandafter\def\csname zybrf@lowercase@W\endcsname{w}
+\expandafter\def\csname zybrf@lowercase@X\endcsname{x}
+\expandafter\def\csname zybrf@lowercase@Y\endcsname{y}
+\expandafter\def\csname zybrf@lowercase@Z\endcsname{z}
 \newif\ifzybrf@memory@ \zybrf@memory@false
 \newif\ifzybrf@initial@ \zybrf@initial@true
 \newif\ifzybrf@newoutput@ \zybrf@newoutput@false
 \newif\ifzybrf@addoutput@ \zybrf@addoutput@false
 \newif\ifzybrf@outputchar@ \zybrf@outputchar@true
 \newif\ifzybrf@outputascii@ \zybrf@outputascii@false
+\newif\ifzybrf@outputunicode@ \zybrf@outputunicode@false
 \def\zybrf@s@o@memory@exists#1{%
-	\expandafter\ifx\csname zybrf@memory@#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+	\edef\zybrf@tmpa{\expandafter\noexpand\csname zybrf@memory@\zybrf@lowercase{#1}\endcsname}%
+	\expandafter\ifx\zybrf@tmpa\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\PackageError{brainfuck}{Invalid Option Value}{Need a Boolean.}}{}%
 	\def\zybrf@s@o@memory@{\zybrf@relax}%
-	\csname zybrf@memory@#1\endcsname
+	\zybrf@tmpa
 }
 \def\zybrf@s@o@initial@exists#1{%
-	\expandafter\ifx\csname zybrf@initial@#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+	\edef\zybrf@tmpa{\expandafter\noexpand\csname zybrf@initial@\zybrf@lowercase{#1}\endcsname}%
+	\expandafter\ifx\zybrf@tmpa\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\PackageError{brainfuck}{Invalid Option Value}{Need a Boolean.}}{}%
 	\def\zybrf@s@o@initial@{\zybrf@relax}%
-	\csname zybrf@initial@#1\endcsname
+	\zybrf@tmpa
 }
 \def\zybrf@s@o@input@exists#1{%
 	\zybrf@s@o@input@switch\ifx\PackageError#1\fi
@@ -194,10 +418,9 @@
 	\def\zybrf@output@stack{}%
 }
 \expandafter\def\csname zybrf@s@o@output format@exists\endcsname#1{%
+	\expandafter\ifx\csname ifzybrf@output\zybrf@lowercase{#1}@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\PackageError{brainfuck}{Invalid Option Value}{}}{\csname zybrf@output\zybrf@lowercase{#1}@true\endcsname}%
 	\expandafter\def\csname zybrf@s@o@output format@\endcsname{\zybrf@relax}%
-	\expandafter\ifx\csname ifzybrf@output#1@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{\PackageError{brainfuck}{Invalid Option Value}{}}
-		{\csname zybrf@output#1@true\endcsname}%
 }
 \def\zybrf@output@check#1{%
 	\zybrf@output@@check#1\zybrf@relax
@@ -291,11 +514,11 @@
 			{\PackageError{brainfuck}{Invalid Option Value}{Need a Option Value.}}
 			{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 				{\PackageError{brainfuck}{Invalid Option}{Complete Option Name.}}
-				{\expandafter\ifx\csname zybrf@s@o@#1@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-					{\expandafter\ifx\csname zybrf@s@o@#1@exists\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-						{\PackageError{brainfuck}{Unknown Option}{`#1'?}}
-						{\csname zybrf@s@o@#1@exists\expandafter\endcsname\expandafter{\romannumeral-`?\zybrf@s@o@@@#2\zybrf@relax}}}
-					{\PackageError{brainfuck}{Option Specified Twice}{Option `#1'.}}}}}%
+				{\expandafter\ifx\csname zybrf@s@o@\zybrf@s@@@o{#1}@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+					{\expandafter\ifx\csname zybrf@s@o@\zybrf@s@@@o{#1}@exists\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+						{\PackageError{brainfuck}{Unknown Option}{`\zybrf@s@@@o{#1}'?}}
+						{\csname zybrf@s@o@\zybrf@s@@@o{#1}@exists\expandafter\endcsname\expandafter{\romannumeral-`?\zybrf@s@o@@@#2\zybrf@relax}}}
+					{\PackageError{brainfuck}{Option Specified Twice}{Option `\zybrf@s@@@o{#1}'.}}}}}%
 	\ifx\zybrf@relax#3\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@s@p}
 		{\zybrf@s@o@#3}%
@@ -303,7 +526,7 @@
 \def\zybrf@s@o@@@#1=\zybrf@relax{\zybrf@s@o@@@@\zybrf@relax#1\zybrf@relax}
 \def\zybrf@s@o@@@@#1\zybrf@relax#2{%
 	\ifx#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{\noexpand#1}
+		{\zybrf@s@@@o{#1}}
 		{\ifx#2\encoded\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\zybrf@s@o@@@@@#1#2\zybrf@relax}
 			{\ifx#2\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
@@ -313,6 +536,20 @@
 \def\zybrf@s@o@@@@@#1\zybrf@relax#2{\zybrf@input@check@enc{#2}\zybrf@s@o@@@@#1{#2}\zybrf@relax}
 \def\zybrf@s@o@@@@@@#1\zybrf@relax#2{\zybrf@s@o@@@@#1\zybrf@relax#2}
 \def\zybrf@s@@o#1{#1}
+\def\zybrf@s@@@o#1{%
+	\zybrf@s@@@o@\zybrf@relax#1 \zybrf@relax
+}
+\def\zybrf@s@@@o@#1\zybrf@relax#2 #3\zybrf@relax{%
+	\ifx\zybrf@relax#3\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\noexpand#2}
+			{\ifx\zybrf@relax#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{\noexpand#1}
+				{\noexpand#1 #2}}}
+		{\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@s@@@o@#2\zybrf@relax#3\zybrf@relax}
+			{\zybrf@s@@@o@#1 #2\zybrf@relax#3\zybrf@relax}}%
+}
 \expandafter\def\csname endbrainfuckcode*\endcsname{%
 	\ifzybrf@memory@\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\expandafter\gdef\csname zybrf@cell@copy\expandafter\endcsname\expandafter{\zybrf@cell@copy}%
@@ -322,6 +559,7 @@
 			{\expandafter\gdef\csname\zybrf@output@macro\expandafter\endcsname\expandafter{\zybrf@output@stack}}{}%
 		\ifzybrf@addoutput@\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\expandafter\zybrf@s@addoutput\expandafter{\csname\zybrf@output@macro\endcsname}}{}}%
+	\@endpefalse
 }
 \def\zybrf@s@addoutput#1{%
 	\expandafter\expandafter\expandafter\zybrf@s@addoutput@\expandafter\expandafter\expandafter{\expandafter#1\zybrf@output@stack}{#1}%
