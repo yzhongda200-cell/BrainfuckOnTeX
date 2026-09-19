@@ -130,8 +130,10 @@
 \def\zybrf@input@a|#1#2\zybrf@relax{\number`#1}
 \def\zybrf@input@b|#1#2\zybrf@relax{#2}
 \def\zybrf@relax{\zybrf@relax@}
+\expandafter\ifx\csname @firstoftwo\endcsname\relax
 \long\def\@firstoftwo#1#2{#1}
 \long\def\@secondoftwo#1#2{#2}
+\fi
 \expandafter\ifx\csname makeatother\endcsname\relax
 	\catcode`\@=12\relax
 \else
