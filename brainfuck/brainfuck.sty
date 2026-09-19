@@ -1,9 +1,21 @@
-\ProvidesPackage{brainfuck}[2026/09/19]
+\ProvidesPackage{brainfuck}[2026/09/20]
 
 \input{brainfuck.tex}
 
 \makeatletter
 \def\zybrf@current{\noexpand\zybrf@current}
+\expandafter\def\csname zybrf@c@[\endcsname{%
+	\PackageError{brainfuck}{Missing `]'}{}
+}
+\def\zybrf@p@@#1\zybrf@relax#2#3\zybrf@relax{%
+	\ifx\zybrf@relax#3\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\ifx[#2\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@p\relax\zybrf@relax#1\zybrf@relax}
+			{\PackageError{brainfuck}{Extra `]'}{}}}
+		{\ifx[#2\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@p@@@\zybrf@loop{#1}\zybrf@endloop\zybrf@relax#3\zybrf@relax}
+			{\zybrf@p@@{#2}#1\zybrf@relax#3\zybrf@relax}}%
+}
 \expandafter\def\csname zybrf@c@.\endcsname{%
 	\ifzybrf@outputascii@ \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\expandafter\zybrf@output@n\expandafter{\romannumeral-`?\zybrf@crr}}
