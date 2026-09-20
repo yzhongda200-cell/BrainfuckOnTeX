@@ -1,9 +1,15 @@
-\ProvidesPackage{brainfuck}[2026/09/20]
+\ProvidesPackage{brainfuck}[2026/09/21]
 
 \input{brainfuck.tex}
 
 \makeatletter
 \def\zybrf@current{\noexpand\zybrf@current}
+\expandafter\def\csname zybrf@c@<\endcsname{%
+	\expandafter\ifx\expandafter\zybrf@current\zybrf@cell@copy
+		\PackageError{brainfuck}{}{}
+	\fi
+	\csname zybrf@c@<@\expandafter\endcsname\zybrf@cell@copy\zybrf@relax
+}
 \expandafter\def\csname zybrf@c@[\endcsname{%
 	\PackageError{brainfuck}{Missing `]'}{}
 }
@@ -262,7 +268,8 @@
 \def\zybrf@s@o@input@exists#1{%
 	\zybrf@s@o@input@switch\ifx\PackageError#1\fi
 	\def\zybrf@s@o@input@{\zybrf@relax}%
-	\edef\zybrf@tmp{#1}%
+	\edef\zybrf@tmp{#1\zybrf@endignore}%
+	\message{^^J\zybrf@tmp}%
 }
 \def\zybrf@s@o@input@switch#1#2#3{#1#2#3\PackageError}
 \def\zybrf@s@o@output@exists#1{%
@@ -321,35 +328,50 @@
 }
 \expandafter\def\csname brainfuckcode*\endcsname{\futurelet\zybrf@tmp\zybrf@s}
 \def\zybrf@s{%
-	\def\encoded##1{\zybrf@@enc##1 \relax}%
+	\def\encoded##1{\zybrf@@enc##1 \zybrf@relax}%
 	\def\zybrf@@enc##1 ##2{%
-		\ifx##2\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\zybrf@@@enc{##1}}
-			{\ifx##2\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-				{\zybrf@@@enc{##1}\zybrf@@enc@fix}
-				{\zybrf@@@enc{##1}\zybrf@@enc##2}}%
+		\ifx##2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\ifx\zybrf@relax##1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{}
+				{\zybrf@@@enc##1\zybrf@relax}}
+			{\zybrf@@@enc##1\zybrf@relax\zybrf@@enc##2}%
 	}%
-	\def\zybrf@@@enc##1{\zybrf@@@enc@##1\zybrf@relax}%
-	\def\zybrf@@@enc@##1##2\zybrf@relax{%
+	\def\zybrf@@@enc##1{%
 		\ifx##1\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\zybrf@enc@fix{##2}|}
-			{\ifx##1\encoded\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-				{\zybrf@@enc##2 \relax}
-				{\zybrf@enc{##1##2}|}}%
+			{\zybrf@@enc@fix##1}
+			{\zybrf@@@enc@##1}%
+	}%
+	\def\zybrf@@@enc@##1\zybrf@relax{%
+		\zybrf@enc{##1}|%
 	}%
 	\def\fix##1{%
 		\ifx##1\encoded\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\expandafter\zybrf@@@fix\romannumeral-`?\encoded}
+			{\zybrf@@fix}
 			{\ifx##1\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 				{\fix}
-				{\zybrf@@fix##1}}%
+				{\zybrf@fix{##1}|\zybrf@ignore}}%
 	}%
-	\def\zybrf@@fix##1{\zybrf@fix{##1}|}%
-	\def\zybrf@@@fix##1{\zybrf@enc@fix}%
-	\def\zybrf@@enc@fix##1{\zybrf@enc@fix{##1}|}%
+	\def\zybrf@@fix##1{%
+		\zybrf@@@fix##1\zybrf@relax
+	}%
+	\def\zybrf@@@fix##1\zybrf@relax{%
+			\expandafter\zybrf@@@@fix\romannumeral-`?\encoded{##1}%
+	}%
+	\def\zybrf@@enc@fix##1##2\zybrf@relax{%
+		\ifx##1\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@@enc@fix##2\zybrf@relax}
+			{\zybrf@enc@fix{##1##2}|\zybrf@ignore}%
+	}%
+	\def\zybrf@@@@fix##1{%
+		\ifx##1\zybrf@enc\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\zybrf@enc@fix}
+			{##1}%
+	}%
 	\def\zybrf@enc@fix{\noexpand\zybrf@enc@fix}%
 	\def\zybrf@fix{\noexpand\zybrf@fix}%
 	\def\zybrf@enc{\noexpand\zybrf@enc}%
+	\def\zybrf@ignore##1\zybrf@endignore{}%
+	\def\zybrf@endignore{}%
 	\ifx[\zybrf@tmp\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\zybrf@s@o}
 		{\expandafter\ifx\expandafter\zybrf@relax\zybrf@setting\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
