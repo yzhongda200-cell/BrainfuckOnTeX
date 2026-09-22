@@ -1,12 +1,13 @@
-\ProvidesPackage{brainfuck}[2026/09/21]
+\ProvidesPackage{brainfuck}[2026/09/22]
 
 \input{brainfuck.tex}
 
 \makeatletter
+\def\zybrf@envname{brainfuckcode*}
 \def\zybrf@current{\noexpand\zybrf@current}
 \expandafter\def\csname zybrf@c@<\endcsname{%
 	\expandafter\ifx\expandafter\zybrf@current\zybrf@cell@copy
-		\PackageError{brainfuck}{}{}
+		\PackageError{brainfuck}{Runaway Pointer}{}
 	\fi
 	\csname zybrf@c@<@\expandafter\endcsname\zybrf@cell@copy\zybrf@relax
 }
@@ -26,10 +27,12 @@
 	\ifzybrf@outputascii@ \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 		{\expandafter\zybrf@output@n\expandafter{\romannumeral-`?\zybrf@crr}}
 		{\ifzybrf@outputunicode@ \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-			{\expandafter\zybrf@output@n\expandafter{\romannumeral-`?\expandafter\zybrf@output@uni\expandafter{\number\zybrf@crr} }}
+			{\expandafter\zybrf@output@n\expandafter{\romannumeral-`?\expandafter\zybrf@output@uni\expandafter{\number\zybrf@crr}}}
 			{\ifnum\zybrf@crr=32 \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 				{\zybrf@output@n{\ }}
-				{\expandafter\zybrf@output@n\expandafter{\expandafter\char\romannumeral-`?\zybrf@crr}}}}%
+				{\ifnum\zybrf@crr=\endlinechar \expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+					{\zybrf@output@n{\\}}
+					{\expandafter\zybrf@output@n\expandafter{\expandafter\char\romannumeral-`?\zybrf@crr}}}}}%
 	\zybrf@c@
 }
 \def\zybrf@output@n#1{%
@@ -38,7 +41,7 @@
 		{\expandafter\def\csname zybrf@output@stack\expandafter\endcsname\expandafter{\zybrf@output@stack#1}}%
 }
 \def\zybrf@output@uni#1{%
-	\zybrf@output@uni@[0]\zybrf@relax#1.\zybrf@relax00;\zybrf@relax0000;\zybrf@relax{}%
+	\zybrf@output@uni@[0]\zybrf@relax#1.\zybrf@relax00;\zybrf@relax0000;\zybrf@relax{}
 }
 \def\zybrf@output@uni@#1[#2]\zybrf@relax#3#4\zybrf@relax#5#6\zybrf@relax#7#8\zybrf@relax#9{%
 	\ifx\zybrf@relax#6\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
@@ -210,40 +213,40 @@
 }
 \def\zybrf@lowercase@@#1#2\zybrf@relax{%
 	\ifx\zybrf@relax#2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
-		{\expandafter\ifx\csname zybrf@lowercase@\string#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\expandafter\ifx\csname zybrf@lowercase@\string#1@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\string#1}
-			{\csname zybrf@lowercase@\string#1\endcsname}}
-		{\expandafter\ifx\csname zybrf@lowercase@\string#1\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+			{\csname zybrf@lowercase@\string#1@\endcsname}}
+		{\expandafter\ifx\csname zybrf@lowercase@\string#1@\endcsname\relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\string#1}
-			{\csname zybrf@lowercase@\string#1\endcsname}%
+			{\csname zybrf@lowercase@\string#1@\endcsname}%
 			\zybrf@lowercase@@#2\zybrf@relax}%
 }
-\expandafter\def\csname zybrf@lowercase@A\endcsname{a}
-\expandafter\def\csname zybrf@lowercase@B\endcsname{b}
-\expandafter\def\csname zybrf@lowercase@C\endcsname{c}
-\expandafter\def\csname zybrf@lowercase@D\endcsname{d}
-\expandafter\def\csname zybrf@lowercase@E\endcsname{e}
-\expandafter\def\csname zybrf@lowercase@F\endcsname{f}
-\expandafter\def\csname zybrf@lowercase@G\endcsname{g}
-\expandafter\def\csname zybrf@lowercase@H\endcsname{h}
-\expandafter\def\csname zybrf@lowercase@I\endcsname{i}
-\expandafter\def\csname zybrf@lowercase@J\endcsname{j}
-\expandafter\def\csname zybrf@lowercase@K\endcsname{k}
-\expandafter\def\csname zybrf@lowercase@L\endcsname{l}
-\expandafter\def\csname zybrf@lowercase@M\endcsname{m}
-\expandafter\def\csname zybrf@lowercase@N\endcsname{n}
-\expandafter\def\csname zybrf@lowercase@O\endcsname{o}
-\expandafter\def\csname zybrf@lowercase@P\endcsname{p}
-\expandafter\def\csname zybrf@lowercase@Q\endcsname{q}
-\expandafter\def\csname zybrf@lowercase@R\endcsname{r}
-\expandafter\def\csname zybrf@lowercase@S\endcsname{s}
-\expandafter\def\csname zybrf@lowercase@T\endcsname{t}
-\expandafter\def\csname zybrf@lowercase@U\endcsname{u}
-\expandafter\def\csname zybrf@lowercase@V\endcsname{v}
-\expandafter\def\csname zybrf@lowercase@W\endcsname{w}
-\expandafter\def\csname zybrf@lowercase@X\endcsname{x}
-\expandafter\def\csname zybrf@lowercase@Y\endcsname{y}
-\expandafter\def\csname zybrf@lowercase@Z\endcsname{z}
+\def\zybrf@lowercase@A@{a}
+\def\zybrf@lowercase@B@{b}
+\def\zybrf@lowercase@C@{c}
+\def\zybrf@lowercase@D@{d}
+\def\zybrf@lowercase@E@{e}
+\def\zybrf@lowercase@F@{f}
+\def\zybrf@lowercase@G@{g}
+\def\zybrf@lowercase@H@{h}
+\def\zybrf@lowercase@I@{i}
+\def\zybrf@lowercase@J@{j}
+\def\zybrf@lowercase@K@{k}
+\def\zybrf@lowercase@L@{l}
+\def\zybrf@lowercase@M@{m}
+\def\zybrf@lowercase@N@{n}
+\def\zybrf@lowercase@O@{o}
+\def\zybrf@lowercase@P@{p}
+\def\zybrf@lowercase@Q@{q}
+\def\zybrf@lowercase@R@{r}
+\def\zybrf@lowercase@S@{s}
+\def\zybrf@lowercase@T@{t}
+\def\zybrf@lowercase@U@{u}
+\def\zybrf@lowercase@V@{v}
+\def\zybrf@lowercase@W@{w}
+\def\zybrf@lowercase@X@{x}
+\def\zybrf@lowercase@Y@{y}
+\def\zybrf@lowercase@Z@{z}
 \newif\ifzybrf@memory@ \zybrf@memory@false
 \newif\ifzybrf@initial@ \zybrf@initial@true
 \newif\ifzybrf@newoutput@ \zybrf@newoutput@false
@@ -382,16 +385,21 @@
 		{\zybrf@s@o@#1,\zybrf@relax}
 		{\expandafter\zybrf@s@o@\zybrf@setting,#1,\zybrf@relax}%
 }
-\def\zybrf@s@p#1\end{%
-	\ifzybrf@initial@
-		\edef\zybrf@cell@copy{\zybrf@cell}%
-	\else
-		\expandafter\ifx\csname zybrf@cell@copy\endcsname\relax
-			\edef\zybrf@cell@copy{\zybrf@cell}%
-		\fi
-	\fi
-	\zybrf@p{#1}%
-	\end
+\long\def\zybrf@s@p#1\end#2{%
+	\def\zybrf@tmpb{#2}%
+	\ifx\zybrf@envname\zybrf@tmpb\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		{\ifzybrf@initial@
+				\edef\zybrf@cell@copy{\zybrf@cell}%
+			\else
+				\expandafter\ifx\csname zybrf@cell@copy\endcsname\relax
+					\edef\zybrf@cell@copy{\zybrf@cell}%
+				\fi
+			\fi
+			\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+				{}
+				{\zybrf@p{#1}}%
+			\end{brainfuckcode*}}
+		{\zybrf@s@p#1}%
 }
 \def\zybrf@s@o@#1,#2{%
 	\ifx\zybrf@relax#1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
