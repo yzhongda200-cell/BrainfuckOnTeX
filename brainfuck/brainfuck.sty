@@ -332,7 +332,7 @@
 \def\zybrf@s{%
 	\def\encoded##1{\zybrf@@enc##1 \zybrf@relax}%
 	\def\zybrf@@enc##1 ##2{%
-		\ifx##2\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
+		\ifx\zybrf@relax##2\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\ifx\zybrf@relax##1\zybrf@relax\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 				{}
 				{\zybrf@@@enc##1\zybrf@relax}}
@@ -362,8 +362,9 @@
 	\def\zybrf@@enc@fix##1##2\zybrf@relax{%
 		\ifx##1\fix\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\zybrf@@enc@fix##2\zybrf@relax}
-			{\zybrf@enc@fix{##1##2}|\zybrf@ignore}%
+			{\zybrf@@enc@@fix##1##2 \zybrf@relax}%
 	}%
+	\def\zybrf@@enc@@fix##1 ##2\zybrf@relax{\zybrf@enc@fix{##1}|\zybrf@ignore}%
 	\def\zybrf@@@@fix##1{%
 		\ifx##1\zybrf@enc\expandafter\@firstoftwo\else\expandafter\@secondoftwo\fi
 			{\zybrf@enc@fix}
