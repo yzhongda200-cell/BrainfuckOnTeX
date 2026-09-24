@@ -1,5 +1,6 @@
 # BrainfuckOnTeX
 
+## brainfuck.tex
 `brainfuck.tex` を読み込み、本文で
 ```tex
 \brainfuck{++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.}
@@ -13,9 +14,12 @@
 \brainfuck[Hello, human.]{>+++[<++++>-]<+[>,.<-]}
 ```
 は `Hello, human.` と出力されます。
-また `\char`を使用するため、使用環境によってはグリフの出力がうまくいかない可能性があります。
+また `\char` を使用するため、使用環境によってはグリフの出力がうまくいかない可能性があります。
 
-`brainfuck.sty` は、LaTeX 向けにより充実したオプションを使用可能な環境を提供します。プリアンブル部で `\usepackage{brainfuck}` または `\RequirePackage{brainfuck}` として読み込んだ時、内部で `brainfuck.tex` を読み込もうとすることに注意してください。
+## brainfuck.sty
+`brainfuck.sty` は、LaTeX 向けにより充実したオプションを使用可能な環境を提供します。プリアンブル部で `\usepackage{brainfuck}` または `\RequirePackage{brainfuck}` として読み込んだ時、内部で `brainfuck.tex` を読み込むことに注意してください。
+
+`brainfuck.tex` を読み込むため `\brainfuck` の使用が可能ですが、後述する設定機能によって動作が変化することがあります。
 ```tex
 \begin{brainfuckcode*}[output=\foo, output format=ascii]
 ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++. Output `Hello'
@@ -55,4 +59,43 @@
 \end{brainfuckcode*}
 ```
 `\fix` に空白文字や `,`、`=` を渡すことはあまりおすすめしません。そこで `\encoded` とネストすることで、代わりに ASCII コードとして渡すことができます。`\fix` と `\encoded` のネストには互換性があり、`\fix` どうしのネストは `\fix` 一つにまとめられます。`\encoded` どうしのネストはできないため注意してください。`\encoded` に渡される値は数値リテラルか、空白文字で区切られた数値リテラルの列、あるいは `\fix` である必要があります。
-`\encoded` に渡すことのできる数値は任意精度です。`,` 実行時に、256 の剰余が計算されて現在のポインタの値にコピーされます。
+```tex
+\begin{brainfuckcode*}[input = A \encoded{\fix{\fix{72 33}} 32}]
+>+++[<+++>-]<+[>,.<-] Output `AHHHHHHHHH'
+\end{brainfuckcode*}
+```
+```tex
+\begin{brainfuckcode*}[input = \fix{\encoded{87}}]
+,>,>++++[<-->-]<<.>.<. Output `WOW'
+\end{brainfuckcode*}
+```
+`\fix` が保護するのは、直後に指定される1文字または ASCII コード1文字だけです。
+
+また、`\encoded` に渡すことのできる数値は任意精度整数です。`,` 実行時に、256 の剰余が計算されて現在のポインタの値にコピーされます。
+
+`\brainfuckset` と `\brainfucksetadd` を使うことで、`brainfuckcode*` 環境のオプションをグローバルに設定および追加することができます。
+```tex
+\brainfuckset{% Set Setting
+  output = \foo,
+  memory = true
+}
+
+\begin{brainfuckcode*}[initial = true]
+++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++. Output `Hello' to \foo
+\end{brainfuckcode*}
+
+\brainfucksetadd{% Add Setting
+  input = \fix{\encoded{32}}
+}
+
+\begin{brainfuckcode*}[initial = false]
+<,.> Add ` ' to \foo
+\end{brainfuckcode*}
+
+\begin{brainfuckcode*}
+>-.<.+++.------.--------.>>+. Add `World!' to \foo
+\end{brainfuckcode*}
+
+\foo% Expand into `Hello World!'
+\brainfuckset{}% Reset Setting
+```
